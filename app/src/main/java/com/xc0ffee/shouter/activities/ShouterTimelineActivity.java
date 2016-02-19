@@ -2,11 +2,12 @@ package com.xc0ffee.shouter.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ListView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.xc0ffee.shouter.R;
-import com.xc0ffee.shouter.adapters.ShouterArrayAdapter;
+import com.xc0ffee.shouter.adapters.ShouterRecyclerAdapter;
 import com.xc0ffee.shouter.models.Shouter;
 import com.xc0ffee.shouter.network.TwitterClient;
 
@@ -24,9 +25,9 @@ public class ShouterTimelineActivity extends AppCompatActivity {
     private TwitterClient mClient;
 
     private ArrayList<Shouter> mShouts;
-    private ShouterArrayAdapter mAdapter;
+    private ShouterRecyclerAdapter mAdapter;
 
-    @Bind(R.id.lv_tweet) ListView mListView;
+    @Bind(R.id.rv_tweets) RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +38,9 @@ public class ShouterTimelineActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mClient = ShouterApplication.getRestClient();
         mShouts = new ArrayList<>();
-        mAdapter = new ShouterArrayAdapter(this, mShouts);
-        mListView.setAdapter(mAdapter);
+        mAdapter = new ShouterRecyclerAdapter(this, mShouts);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         populateTimeline();
     }
 
@@ -47,7 +49,8 @@ public class ShouterTimelineActivity extends AppCompatActivity {
         mClient.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                mAdapter.addAll(Shouter.fromJsonArray(response));
+                mShouts.addAll(Shouter.fromJsonArray(response));
+                mAdapter.notifyDataSetChanged();
             }
 
             @Override
