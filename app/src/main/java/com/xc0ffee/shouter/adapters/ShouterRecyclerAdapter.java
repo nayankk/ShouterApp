@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 import com.xc0ffee.shouter.R;
 import com.xc0ffee.shouter.models.Tweet;
 
@@ -55,7 +55,7 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
         Tweet tweet = mTweets.get(position);
         ImageView imageView = holder.mProfileImage;
         imageView.setImageResource(android.R.color.transparent);
-        Picasso.with(mContext).load(tweet.getUser().getProfileImageUrl()).into(imageView);
+        Glide.with(mContext).load(tweet.getUser().getProfileImageUrl()).into(imageView);
         holder.mUsername.setText(tweet.getUser().getName());
         holder.mBody.setText(tweet.getText());
     }
