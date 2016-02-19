@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Shouter</string>
+    <string name="api_key" translatable="false">3tJGdmlxd7Xp6FlTx6c7zSEXB</string>
+    <string name="api_secret" translatable="false">FDtmOFjufMp53DtE0ao080AcrF36QZNFZAohzN1DZyzumkkkPT</string>
+    <string name="login">Login to twitter</string>
+    <string name="timeline_title">Timeline</string>
+</resources>
