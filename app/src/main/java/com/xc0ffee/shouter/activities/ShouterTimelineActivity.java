@@ -41,6 +41,11 @@ public class ShouterTimelineActivity extends AppCompatActivity {
         mAdapter = new ShouterRecyclerAdapter(this, mShouts);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        RecyclerView.ItemDecoration itemDecoration = new
+                DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
+        mRecyclerView.addItemDecoration(itemDecoration);
+
         populateTimeline();
     }
 

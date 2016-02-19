@@ -20,16 +20,22 @@
         android:layout_toRightOf="@+id/iv_profile"
         android:layout_toEndOf="@+id/iv_profile"
         android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="10dp"
+        android:fontFamily="sans-serif-light"
+        android:textStyle="bold"
+        android:textSize="12sp"
+        android:textColor="@android:color/black"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_body"
-        android:layout_alignBottom="@+id/iv_profile"
         android:layout_toRightOf="@+id/iv_profile"
         android:layout_toEndOf="@+id/iv_profile"
+        android:layout_below="@id/tv_user"
         android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="10dp"
+        android:textSize="12sp"
+        android:fontFamily="sans-serif"/>
 
 </RelativeLayout>
