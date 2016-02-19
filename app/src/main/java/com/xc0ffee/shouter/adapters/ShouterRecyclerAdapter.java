@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.xc0ffee.shouter.R;
-import com.xc0ffee.shouter.models.Shouter;
+import com.xc0ffee.shouter.models.Tweet;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 
 public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecyclerAdapter.ViewHolder> {
 
-    List<Shouter> mTweets;
+    List<Tweet> mTweets;
 
     private final Context mContext;
 
@@ -36,7 +36,7 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
         }
     }
 
-    public ShouterRecyclerAdapter(Context context, List<Shouter> tweets) {
+    public ShouterRecyclerAdapter(Context context, List<Tweet> tweets) {
         mContext = context;
         mTweets = tweets;
     }
@@ -52,12 +52,12 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
 
     @Override
     public void onBindViewHolder(ShouterRecyclerAdapter.ViewHolder holder, int position) {
-        Shouter tweet = mTweets.get(position);
+        Tweet tweet = mTweets.get(position);
         ImageView imageView = holder.mProfileImage;
         imageView.setImageResource(android.R.color.transparent);
         Picasso.with(mContext).load(tweet.getUser().getProfileImageUrl()).into(imageView);
         holder.mUsername.setText(tweet.getUser().getName());
-        holder.mBody.setText(tweet.getBody());
+        holder.mBody.setText(tweet.getText());
     }
 
     @Override

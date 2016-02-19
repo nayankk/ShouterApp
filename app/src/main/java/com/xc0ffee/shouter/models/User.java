@@ -1,41 +1,25 @@
 package com.xc0ffee.shouter.models;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class User {
 
-    private String mName;
-    private long mUid;
-    private String mScreenName;
-    private String mProfileImageUrl;
-
-    public static User fromJson(JSONObject jsonObject) {
-        User user = new User();
-        try {
-            user.mName = jsonObject.getString("name");
-            user.mUid = jsonObject.getLong("id");
-            user.mScreenName = jsonObject.getString("screen_name");
-            user.mProfileImageUrl = jsonObject.getString("profile_image_url");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return user;
-    }
+    private String name;
+    private long id;
+    private String screen_name;
+    private String profile_image_url;
 
     public String getName() {
-        return mName;
+        return name;
     }
 
-    public long getUid() {
-        return mUid;
+    public long getId() {
+        return id;
     }
 
     public String getScreenName() {
-        return mScreenName;
+        return screen_name;
     }
 
     public String getProfileImageUrl() {
-        return mProfileImageUrl;
+        return profile_image_url;
     }
 }

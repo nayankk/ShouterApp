@@ -5,17 +5,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.xc0ffee.shouter.R;
 import com.xc0ffee.shouter.adapters.ShouterRecyclerAdapter;
-import com.xc0ffee.shouter.models.Shouter;
+import com.xc0ffee.shouter.models.Tweet;
 import com.xc0ffee.shouter.network.TwitterClient;
 
 import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -24,7 +27,7 @@ public class ShouterTimelineActivity extends AppCompatActivity {
 
     private TwitterClient mClient;
 
-    private ArrayList<Shouter> mShouts;
+    private List<Tweet> mTweets = new ArrayList<>();
     private ShouterRecyclerAdapter mAdapter;
 
     @Bind(R.id.rv_tweets) RecyclerView mRecyclerView;
@@ -37,8 +40,7 @@ public class ShouterTimelineActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         mClient = ShouterApplication.getRestClient();
-        mShouts = new ArrayList<>();
-        mAdapter = new ShouterRecyclerAdapter(this, mShouts);
+        mAdapter = new ShouterRecyclerAdapter(this, mTweets);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -50,17 +52,19 @@ public class ShouterTimelineActivity extends AppCompatActivity {
     }
 
     private void populateTimeline() {
-
-        mClient.getHomeTimeline(new JsonHttpResponseHandler() {
+        mClient.getHomeTimeline(new TextHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                mShouts.addAll(Shouter.fromJsonArray(response));
-                mAdapter.notifyDataSetChanged();
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Gson gson = new GsonBuilder().create();
+                Type listType = new TypeToken<List<Tweet>>(){}.getType();
+                List<Tweet> tweets = gson.fromJson(responseString, listType);
+                mTweets.addAll(tweets);
+                mAdapter.notifyDataSetChanged();
             }
         });
     }
