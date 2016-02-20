@@ -36,6 +36,8 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
         @Bind(R.id.tv_body) TextView mBody;
         @Bind(R.id.tv_timestamp) TextView mTimeStamp;
         @Bind(R.id.iv_embed_image) ImageView mImage;
+        @Bind(R.id.tv_retweet_count) TextView mTweetCnt;
+        @Bind(R.id.tv_like_count) TextView mLikeCnt;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -77,6 +79,8 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
                 holder.mImage.setVisibility(View.VISIBLE);
             }
         }
+        holder.mLikeCnt.setText(tweet.getFavouritesCount());
+        holder.mTweetCnt.setText(tweet.getRetweetCount());
     }
 
     @Override

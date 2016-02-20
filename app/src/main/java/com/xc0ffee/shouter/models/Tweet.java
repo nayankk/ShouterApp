@@ -6,6 +6,8 @@ public class Tweet {
     private User user;
     private String created_at;
     private Entities entities;
+    private String favorite_count;
+    private String retweet_count;
 
     public String getText() {
         return text;
@@ -25,5 +27,13 @@ public class Tweet {
 
     public Entities getEntities() {
         return entities;
+    }
+
+    public String getFavouritesCount() {
+        return favorite_count;
+    }
+
+    public String getRetweetCount() {
+        return retweet_count;
     }
 }
