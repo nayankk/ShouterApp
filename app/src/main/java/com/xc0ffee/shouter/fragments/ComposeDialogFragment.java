@@ -4,13 +4,16 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -28,6 +31,26 @@ public class ComposeDialogFragment extends android.support.v4.app.DialogFragment
 
     @Bind(R.id.et_tweet) EditText mTweetText;
     @Bind(R.id.btn_tweet) Button mTweetBtn;
+    @Bind(R.id.tv_char_count) TextView mCharCount;
+
+    private final TextWatcher mTextEditorWatcher = new TextWatcher() {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            int length = s.length();
+            if (length <= 140) {
+                mCharCount.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                mCharCount.setText(String.valueOf(140-s.length()));
+            } else {
+                mCharCount.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                mCharCount.setText(String.valueOf(140-s.length()));
+            }
+        }
+
+        public void afterTextChanged(Editable s) {
+        }
+    };
 
     public static ComposeDialogFragment newInstance(String title) {
         ComposeDialogFragment fragment = new ComposeDialogFragment();
@@ -57,6 +80,8 @@ public class ComposeDialogFragment extends android.support.v4.app.DialogFragment
         super.onViewCreated(view, savedInstanceState);
 
         ButterKnife.bind(this, view);
+
+        mTweetText.addTextChangedListener(mTextEditorWatcher);
 
         mTweetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
