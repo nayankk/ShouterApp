@@ -1,11 +1,10 @@
 package com.xc0ffee.shouter.activities;
 
-import android.app.Application;
 import android.content.Context;
 
 import com.xc0ffee.shouter.network.TwitterClient;
 
-public class ShouterApplication extends Application {
+public class ShouterApplication extends com.activeandroid.app.Application {
 
     private static Context mContext;
 

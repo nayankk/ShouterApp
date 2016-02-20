@@ -69,14 +69,18 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
         holder.mUsername.setText(tweet.getUser().getName());
         holder.mBody.setText(tweet.getText());
         holder.mTimeStamp.setText(getRelativeTimeAgo(tweet.getCreatedAt()));
-        List<Media> mediaList = tweet.getEntities().getMedia();
+
+
         holder.mImage.setImageResource(android.R.color.transparent);
         holder.mImage.setVisibility(View.GONE);
-        if (!mediaList.isEmpty()) {
-            String embedUrl = mediaList.get(0).getMediaUrl();
-            if (!TextUtils.isEmpty(embedUrl)) {
-                Glide.with(mContext).load(embedUrl).into(holder.mImage);
-                holder.mImage.setVisibility(View.VISIBLE);
+        if (tweet.getEntities() != null) {
+            List<Media> mediaList = tweet.getEntities().getMedia();
+            if (!mediaList.isEmpty()) {
+                String embedUrl = mediaList.get(0).getMediaUrl();
+                if (!TextUtils.isEmpty(embedUrl)) {
+                    Glide.with(mContext).load(embedUrl).into(holder.mImage);
+                    holder.mImage.setVisibility(View.VISIBLE);
+                }
             }
         }
         holder.mLikeCnt.setText(tweet.getFavouritesCount());

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -19,10 +20,12 @@ import com.xc0ffee.shouter.R;
 import com.xc0ffee.shouter.adapters.ShouterRecyclerAdapter;
 import com.xc0ffee.shouter.fragments.ComposeDialogFragment;
 import com.xc0ffee.shouter.models.Tweet;
+import com.xc0ffee.shouter.models.User;
 import com.xc0ffee.shouter.network.TwitterClient;
 
 import org.apache.http.Header;
 
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +87,17 @@ public class ShouterTimelineActivity extends AppCompatActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
+        // First load from Active Android DB
+        loadFromAA();
+
+        // Get tweets from network
         populateTimeline(true, -1);
+    }
+
+    private void loadFromAA() {
+        List<Tweet> tweetList = new Select().from(Tweet.class).orderBy("RemoteId DESC").limit(100).execute();
+        mTweets.addAll(tweetList);
+        mAdapter.notifyDataSetChanged();
     }
 
     public void populateTimeline(final boolean shouldClear, final long maxId) {
@@ -105,12 +118,22 @@ public class ShouterTimelineActivity extends AppCompatActivity {
 
     private void refreshTimeline(String response, boolean shouldClear, final long maxId) {
         if (shouldClear) mTweets.clear();
-        Gson gson = new GsonBuilder().create();
+        Gson gson = new GsonBuilder()
+                .excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
+                .create();
         Type listType = new TypeToken<List<Tweet>>(){}.getType();
         List<Tweet> tweets = gson.fromJson(response, listType);
+
+        // Save the tweets in ActiveAndroid
+        for (Tweet tweet : tweets) {
+            User user = tweet.getUser();
+            user.save();
+            tweet.save();
+        }
+
         int oldSize = mTweets.size();
         // First time is the dup of the maxId
-        if (maxId != -1) tweets.remove(0);
+        if (maxId != -1 && !tweets.isEmpty()) tweets.remove(0);
         mTweets.addAll(tweets);
         mAdapter.notifyItemRangeChanged(oldSize, mTweets.size() - 1);
         mSwipeContainer.setRefreshing(false);

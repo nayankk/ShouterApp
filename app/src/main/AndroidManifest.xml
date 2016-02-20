@@ -12,6 +12,13 @@
         android:theme="@style/AppTheme"
         android:name="com.xc0ffee.shouter.activities.ShouterApplication">
 
+        <meta-data
+            android:name="AA_DB_NAME"
+            android:value="RestClient.db" />
+        <meta-data
+            android:name="AA_DB_VERSION"
+            android:value="1" />
+
         <activity android:name="com.xc0ffee.shouter.activities.ShouterLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
