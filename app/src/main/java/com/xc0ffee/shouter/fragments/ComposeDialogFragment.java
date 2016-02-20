@@ -13,9 +13,12 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.xc0ffee.shouter.R;
 import com.xc0ffee.shouter.activities.ShouterApplication;
@@ -23,6 +26,8 @@ import com.xc0ffee.shouter.activities.ShouterTimelineActivity;
 import com.xc0ffee.shouter.network.TwitterClient;
 
 import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -32,6 +37,10 @@ public class ComposeDialogFragment extends android.support.v4.app.DialogFragment
     @Bind(R.id.et_tweet) EditText mTweetText;
     @Bind(R.id.btn_tweet) Button mTweetBtn;
     @Bind(R.id.tv_char_count) TextView mCharCount;
+    @Bind(R.id.iv_profile) ImageView mProfileImage;
+    @Bind(R.id.iv_close) ImageView mCloseBtn;
+    @Bind(R.id.tv_myname) TextView mMyName;
+    @Bind(R.id.tv_myhandle) TextView mMyHandle;
 
     private final TextWatcher mTextEditorWatcher = new TextWatcher() {
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -73,6 +82,25 @@ public class ComposeDialogFragment extends android.support.v4.app.DialogFragment
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
         super.onResume();
+
+        ShouterApplication.getRestClient().getProfile(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                String profileImgUrl = null;
+                try {
+                    profileImgUrl = response.getString("profile_image_url");
+                    Glide.with(getContext()).load(profileImgUrl).into(mProfileImage);
+                    mMyName.setText(response.getString("name"));
+                    mMyHandle.setText("@" + response.getString("screen_name"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+            }
+        });
     }
 
     @Override
@@ -87,6 +115,13 @@ public class ComposeDialogFragment extends android.support.v4.app.DialogFragment
             @Override
             public void onClick(View v) {
                 postToTwitter();
+            }
+        });
+
+        mCloseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
             }
         });
     }

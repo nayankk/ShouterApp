@@ -2,15 +2,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="10dp">
 
-    <ImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:id="@+id/iv_profile"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="false" />
+        android:layout_alignParentStart="false"
+        app:riv_corner_radius="30dip"
+        app:riv_border_color="#333333"
+        app:riv_mutate_background="true"
+        app:riv_tile_mode="repeat"
+        app:riv_oval="true"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
