@@ -54,4 +54,8 @@ public class Tweet extends Model {
     public String getRetweetCount() {
         return retweet_count;
     }
+
+    public long getTweetId() {
+        return id;
+    }
 }

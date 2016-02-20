@@ -1,19 +1,29 @@
 package com.xc0ffee.shouter.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.xc0ffee.shouter.R;
+import com.xc0ffee.shouter.activities.ShouterApplication;
+import com.xc0ffee.shouter.activities.ShouterTimelineActivity;
 import com.xc0ffee.shouter.models.Media;
 import com.xc0ffee.shouter.models.Tweet;
+
+import org.apache.http.Header;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,6 +48,7 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
         @Bind(R.id.iv_embed_image) ImageView mImage;
         @Bind(R.id.tv_retweet_count) TextView mTweetCnt;
         @Bind(R.id.tv_like_count) TextView mLikeCnt;
+        @Bind(R.id.retweet) ViewGroup mRetweetView;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -61,7 +72,7 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
     }
 
     @Override
-    public void onBindViewHolder(ShouterRecyclerAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final ShouterRecyclerAdapter.ViewHolder holder, int position) {
         Tweet tweet = mTweets.get(position);
         ImageView imageView = holder.mProfileImage;
         imageView.setImageResource(android.R.color.transparent);
@@ -69,8 +80,6 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
         holder.mUsername.setText(tweet.getUser().getName());
         holder.mBody.setText(tweet.getText());
         holder.mTimeStamp.setText(getRelativeTimeAgo(tweet.getCreatedAt()));
-
-
         holder.mImage.setImageResource(android.R.color.transparent);
         holder.mImage.setVisibility(View.GONE);
         if (tweet.getEntities() != null) {
@@ -85,6 +94,27 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
         }
         holder.mLikeCnt.setText(tweet.getFavouritesCount());
         holder.mTweetCnt.setText(tweet.getRetweetCount());
+        final long tweetId = tweet.getTweetId();
+        holder.mRetweetView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(mContext)
+                        .setPositiveButton("Retweet", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                retweetMessage(tweetId);
+                            }
+                        })
+                        .setTitle("Retweet?")
+                        .setMessage("Are you sure you want to retweet " + holder.mUsername.getText().toString() + "\'s tweet")
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }).create().show();
+            }
+        });
     }
 
     @Override
@@ -107,5 +137,21 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
         }
 
         return relativeDate;
+    }
+
+    public void retweetMessage(long tweetId) {
+        ShouterApplication.getRestClient().retweet(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                ShouterTimelineActivity activity = (ShouterTimelineActivity) mContext;
+                activity.populateTimeline(true, -1);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Toast.makeText(mContext, "Retweet failed", Toast.LENGTH_SHORT).show();
+                Log.d("NAYAN", "Error = " + errorResponse);
+            }
+        }, tweetId);
     }
 }
