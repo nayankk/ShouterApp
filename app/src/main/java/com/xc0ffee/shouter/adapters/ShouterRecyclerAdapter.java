@@ -52,6 +52,7 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
         @Bind(R.id.fav) ViewGroup mFavView;
         @Bind(R.id.retweet_img) ImageView mRetweetImg;
         @Bind(R.id.iv_favorited) ImageView mFavImg;
+        @Bind(R.id.tv_handle) TextView mHandle;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -141,6 +142,8 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
                 }
             });
         }
+
+        holder.mHandle.setText("@"+tweet.getUser().getScreenName());
     }
 
     @Override
