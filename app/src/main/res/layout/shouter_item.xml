@@ -53,6 +53,21 @@
         android:layout_marginLeft="10dp"
         android:textSize="12sp"
         android:fontFamily="sans-serif"
-        android:layout_marginTop="3dp"/>
+        android:layout_marginTop="3dp"
+        android:autoLink="all"
+        android:linksClickable="true"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:id="@+id/iv_embed_image"
+        android:layout_toRightOf="@+id/iv_profile"
+        android:layout_toEndOf="@+id/iv_profile"
+        android:layout_below="@id/tv_body"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="3dp"
+        android:scaleType="centerCrop"
+        android:visibility="gone"/>
 
 </RelativeLayout>

@@ -3,10 +3,13 @@ package com.xc0ffee.shouter.activities;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,6 +39,7 @@ public class ShouterTimelineActivity extends AppCompatActivity {
 
     @Bind(R.id.rv_tweets) RecyclerView mRecyclerView;
     @Bind(R.id.fab_compose) FloatingActionButton mComposeFab;
+    @Bind(R.id.swipe_container) SwipeRefreshLayout mSwipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +72,18 @@ public class ShouterTimelineActivity extends AppCompatActivity {
             }
         });
 
+        mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                populateTimeline(true, -1);
+            }
+        });
+
+        mSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         populateTimeline(true, -1);
     }
 
@@ -75,7 +91,9 @@ public class ShouterTimelineActivity extends AppCompatActivity {
         mClient.getHomeTimeline(new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
+                Toast.makeText(getApplicationContext(), "Couldn't refresh timeline", Toast.LENGTH_SHORT).show();
+                Log.d("NAYAN", "Response = " + responseString);
+                mSwipeContainer.setRefreshing(false);
             }
 
             @Override
@@ -94,7 +112,8 @@ public class ShouterTimelineActivity extends AppCompatActivity {
         // First time is the dup of the maxId
         if (maxId != -1) tweets.remove(0);
         mTweets.addAll(tweets);
-        mAdapter.notifyItemRangeChanged(oldSize, mTweets.size()-1);
+        mAdapter.notifyItemRangeChanged(oldSize, mTweets.size() - 1);
+        mSwipeContainer.setRefreshing(false);
     }
 
     public void customLoadMoreDataFromApi(int offset) {

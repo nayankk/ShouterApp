@@ -2,6 +2,7 @@ package com.xc0ffee.shouter.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.xc0ffee.shouter.R;
+import com.xc0ffee.shouter.models.Media;
 import com.xc0ffee.shouter.models.Tweet;
 
 import java.text.ParseException;
@@ -33,6 +35,7 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
         @Bind(R.id.tv_user) TextView mUsername;
         @Bind(R.id.tv_body) TextView mBody;
         @Bind(R.id.tv_timestamp) TextView mTimeStamp;
+        @Bind(R.id.iv_embed_image) ImageView mImage;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -64,6 +67,16 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
         holder.mUsername.setText(tweet.getUser().getName());
         holder.mBody.setText(tweet.getText());
         holder.mTimeStamp.setText(getRelativeTimeAgo(tweet.getCreatedAt()));
+        List<Media> mediaList = tweet.getEntities().getMedia();
+        holder.mImage.setImageResource(android.R.color.transparent);
+        holder.mImage.setVisibility(View.GONE);
+        if (!mediaList.isEmpty()) {
+            String embedUrl = mediaList.get(0).getMediaUrl();
+            if (!TextUtils.isEmpty(embedUrl)) {
+                Glide.with(mContext).load(embedUrl).into(holder.mImage);
+                holder.mImage.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override

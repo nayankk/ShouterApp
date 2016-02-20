@@ -5,6 +5,7 @@ public class Tweet {
     private long id;
     private User user;
     private String created_at;
+    private Entities entities;
 
     public String getText() {
         return text;
@@ -20,5 +21,9 @@ public class Tweet {
 
     public String getCreatedAt() {
         return created_at;
+    }
+
+    public Entities getEntities() {
+        return entities;
     }
 }
