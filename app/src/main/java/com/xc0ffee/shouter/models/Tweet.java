@@ -27,6 +27,12 @@ public class Tweet extends Model {
     @Column(name = "RetweetCount")
     private String retweet_count;
 
+    @Column(name = "RetweetStatus")
+    private boolean retweeted;
+
+    @Column(name = "Favorited")
+    private boolean favorited;
+
     public Tweet() {
         super();
     }
@@ -57,5 +63,13 @@ public class Tweet extends Model {
 
     public long getTweetId() {
         return id;
+    }
+
+    public boolean isRetweeted() {
+        return retweeted;
+    }
+
+    public boolean isFavorited() {
+        return favorited;
     }
 }

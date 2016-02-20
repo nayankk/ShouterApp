@@ -49,6 +49,9 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
         @Bind(R.id.tv_retweet_count) TextView mTweetCnt;
         @Bind(R.id.tv_like_count) TextView mLikeCnt;
         @Bind(R.id.retweet) ViewGroup mRetweetView;
+        @Bind(R.id.fav) ViewGroup mFavView;
+        @Bind(R.id.retweet_img) ImageView mRetweetImg;
+        @Bind(R.id.iv_favorited) ImageView mFavImg;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -80,6 +83,7 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
         holder.mUsername.setText(tweet.getUser().getName());
         holder.mBody.setText(tweet.getText());
         holder.mTimeStamp.setText(getRelativeTimeAgo(tweet.getCreatedAt()));
+
         holder.mImage.setImageResource(android.R.color.transparent);
         holder.mImage.setVisibility(View.GONE);
         if (tweet.getEntities() != null) {
@@ -92,29 +96,51 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
                 }
             }
         }
+
         holder.mLikeCnt.setText(tweet.getFavouritesCount());
         holder.mTweetCnt.setText(tweet.getRetweetCount());
-        final long tweetId = tweet.getTweetId();
-        holder.mRetweetView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(mContext)
-                        .setPositiveButton("Retweet", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                retweetMessage(tweetId);
-                            }
-                        })
-                        .setTitle("Retweet?")
-                        .setMessage("Are you sure you want to retweet " + holder.mUsername.getText().toString() + "\'s tweet")
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
 
-                            }
-                        }).create().show();
-            }
-        });
+        holder.mRetweetImg.setImageResource(android.R.color.transparent);
+        if (tweet.isRetweeted()) holder.mRetweetImg.setImageResource(R.drawable.twitter_retweet_selected);
+        else holder.mRetweetImg.setImageResource(R.drawable.ic_twitter_retweet_grey600_18dp);
+
+        if (!tweet.isRetweeted()) {
+            final long tweetId = tweet.getTweetId();
+            holder.mRetweetView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new AlertDialog.Builder(mContext)
+                            .setPositiveButton("Retweet", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    retweetMessage(tweetId);
+                                }
+                            })
+                            .setTitle("Retweet?")
+                            .setMessage("Are you sure you want to retweet " + holder.mUsername.getText().toString() + "\'s tweet")
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            }).create().show();
+                }
+            });
+        }
+
+        holder.mFavImg.setImageResource(android.R.color.transparent);
+        if (tweet.isFavorited()) holder.mFavImg.setImageResource(R.drawable.heart_selected);
+        else holder.mFavImg.setImageResource(R.drawable.ic_heart_grey600_18dp);
+
+        if (!tweet.isFavorited()) {
+            final long tweetId = tweet.getTweetId();
+            holder.mFavView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    favoriteTweet(tweetId);
+                }
+            });
+        }
     }
 
     @Override
@@ -150,6 +176,22 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 Toast.makeText(mContext, "Retweet failed", Toast.LENGTH_SHORT).show();
+                Log.d("NAYAN", "Error = " + errorResponse);
+            }
+        }, tweetId);
+    }
+
+    public void favoriteTweet(long tweetId) {
+        ShouterApplication.getRestClient().favTweet(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                ShouterTimelineActivity activity = (ShouterTimelineActivity) mContext;
+                activity.populateTimeline(true, -1);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Toast.makeText(mContext, "Favorite failed", Toast.LENGTH_SHORT).show();
                 Log.d("NAYAN", "Error = " + errorResponse);
             }
         }, tweetId);

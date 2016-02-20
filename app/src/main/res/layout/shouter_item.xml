@@ -95,10 +95,12 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true">
+            android:layout_centerInParent="true"
+            android:id="@+id/fav">
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/iv_favorited"
                 android:src="@drawable/ic_heart_grey600_18dp"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -121,6 +123,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/retweet_img"
                 android:src="@drawable/ic_twitter_retweet_grey600_18dp"/>
             <TextView
                 android:layout_width="wrap_content"
