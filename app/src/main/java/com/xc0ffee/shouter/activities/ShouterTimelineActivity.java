@@ -42,16 +42,24 @@ public class ShouterTimelineActivity extends AppCompatActivity {
         mClient = ShouterApplication.getRestClient();
         mAdapter = new ShouterRecyclerAdapter(this, mTweets);
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layout = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(layout);
 
         RecyclerView.ItemDecoration itemDecoration = new
                 DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
         mRecyclerView.addItemDecoration(itemDecoration);
 
-        populateTimeline();
+        mRecyclerView.addOnScrollListener(new EndlessScrollListener(layout) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                customLoadMoreDataFromApi(page);
+            }
+        });
+
+        populateTimeline(-1);
     }
 
-    private void populateTimeline() {
+    private void populateTimeline(final long maxId) {
         mClient.getHomeTimeline(new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -63,9 +71,18 @@ public class ShouterTimelineActivity extends AppCompatActivity {
                 Gson gson = new GsonBuilder().create();
                 Type listType = new TypeToken<List<Tweet>>(){}.getType();
                 List<Tweet> tweets = gson.fromJson(responseString, listType);
+                int oldSize = tweets.size();
+                // First time is the dup of the maxId
+                tweets.remove(0);
                 mTweets.addAll(tweets);
-                mAdapter.notifyDataSetChanged();
+                mAdapter.notifyItemRangeChanged(oldSize, mTweets.size()-1);
             }
-        });
+        }, maxId);
+    }
+
+    public void customLoadMoreDataFromApi(int offset) {
+        // Lowest ID will always be at the last position
+        long lowest = mTweets.get(mTweets.size()-1).getId();
+        populateTimeline(lowest);
     }
 }

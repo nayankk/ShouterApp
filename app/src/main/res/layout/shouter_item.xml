@@ -12,19 +12,35 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false" />
 
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_user"
+        android:orientation="horizontal"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/iv_profile"
         android:layout_toEndOf="@+id/iv_profile"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:fontFamily="sans-serif-light"
-        android:textStyle="bold"
-        android:textSize="12sp"
-        android:textColor="@android:color/black"/>
+        android:id="@+id/top_row">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_user"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:fontFamily="sans-serif-light"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:textColor="@android:color/black"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textSize="12sp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:id="@+id/tv_timestamp"/>
+    </RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,10 +48,11 @@
         android:id="@+id/tv_body"
         android:layout_toRightOf="@+id/iv_profile"
         android:layout_toEndOf="@+id/iv_profile"
-        android:layout_below="@id/tv_user"
+        android:layout_below="@id/top_row"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:textSize="12sp"
-        android:fontFamily="sans-serif"/>
+        android:fontFamily="sans-serif"
+        android:layout_marginTop="3dp"/>
 
 </RelativeLayout>
