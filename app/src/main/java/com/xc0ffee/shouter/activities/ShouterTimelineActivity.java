@@ -1,9 +1,12 @@
 package com.xc0ffee.shouter.activities;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -11,6 +14,7 @@ import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.xc0ffee.shouter.R;
 import com.xc0ffee.shouter.adapters.ShouterRecyclerAdapter;
+import com.xc0ffee.shouter.fragments.ComposeDialogFragment;
 import com.xc0ffee.shouter.models.Tweet;
 import com.xc0ffee.shouter.network.TwitterClient;
 
@@ -31,6 +35,7 @@ public class ShouterTimelineActivity extends AppCompatActivity {
     private ShouterRecyclerAdapter mAdapter;
 
     @Bind(R.id.rv_tweets) RecyclerView mRecyclerView;
+    @Bind(R.id.fab_compose) FloatingActionButton mComposeFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +61,17 @@ public class ShouterTimelineActivity extends AppCompatActivity {
             }
         });
 
-        populateTimeline(-1);
+        mComposeFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCompose();
+            }
+        });
+
+        populateTimeline(true, -1);
     }
 
-    private void populateTimeline(final long maxId) {
+    public void populateTimeline(final boolean shouldClear, final long maxId) {
         mClient.getHomeTimeline(new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -68,21 +80,32 @@ public class ShouterTimelineActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Gson gson = new GsonBuilder().create();
-                Type listType = new TypeToken<List<Tweet>>(){}.getType();
-                List<Tweet> tweets = gson.fromJson(responseString, listType);
-                int oldSize = tweets.size();
-                // First time is the dup of the maxId
-                tweets.remove(0);
-                mTweets.addAll(tweets);
-                mAdapter.notifyItemRangeChanged(oldSize, mTweets.size()-1);
+                refreshTimeline(responseString, shouldClear, maxId);
             }
         }, maxId);
+    }
+
+    private void refreshTimeline(String response, boolean shouldClear, final long maxId) {
+        if (shouldClear) mTweets.clear();
+        Gson gson = new GsonBuilder().create();
+        Type listType = new TypeToken<List<Tweet>>(){}.getType();
+        List<Tweet> tweets = gson.fromJson(response, listType);
+        int oldSize = mTweets.size();
+        // First time is the dup of the maxId
+        if (maxId != -1) tweets.remove(0);
+        mTweets.addAll(tweets);
+        mAdapter.notifyItemRangeChanged(oldSize, mTweets.size()-1);
     }
 
     public void customLoadMoreDataFromApi(int offset) {
         // Lowest ID will always be at the last position
         long lowest = mTweets.get(mTweets.size()-1).getId();
-        populateTimeline(lowest);
+        populateTimeline(false, lowest);
+    }
+
+    private void showCompose() {
+        FragmentManager fm = getSupportFragmentManager();
+        ComposeDialogFragment fragment = ComposeDialogFragment.newInstance("Compose a shout");
+        fragment.show(fm, "compose_fg");
     }
 }

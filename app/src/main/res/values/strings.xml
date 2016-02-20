@@ -4,4 +4,5 @@
     <string name="api_secret" translatable="false">FDtmOFjufMp53DtE0ao080AcrF36QZNFZAohzN1DZyzumkkkPT</string>
     <string name="login">Login to twitter</string>
     <string name="timeline_title">Timeline</string>
+    <string name="shout_anything">Shout anything...</string>
 </resources>
