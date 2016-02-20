@@ -158,6 +158,6 @@ public class ComposeDialogFragment extends android.support.v4.app.DialogFragment
                 Toast.makeText(getContext(), "Couldn't shout!", Toast.LENGTH_SHORT).show();
                 dismiss();
             }
-        }, tweetMsg);
+        }, tweetMsg, null);
     }
 }

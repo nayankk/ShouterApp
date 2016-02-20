@@ -19,6 +19,7 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import com.xc0ffee.shouter.R;
 import com.xc0ffee.shouter.adapters.ShouterRecyclerAdapter;
 import com.xc0ffee.shouter.fragments.ComposeDialogFragment;
+import com.xc0ffee.shouter.fragments.ReplyFragment;
 import com.xc0ffee.shouter.models.Tweet;
 import com.xc0ffee.shouter.models.User;
 import com.xc0ffee.shouter.network.TwitterClient;
@@ -149,5 +150,11 @@ public class ShouterTimelineActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         ComposeDialogFragment fragment = ComposeDialogFragment.newInstance("Compose a shout");
         fragment.show(fm, "compose_fg");
+    }
+
+    public void showReply(long id, String name) {
+        FragmentManager fm = getSupportFragmentManager();
+        ReplyFragment fragment = ReplyFragment.newInstance(name, id);
+        fragment.show(fm, "reply");
     }
 }

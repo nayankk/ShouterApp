@@ -53,6 +53,7 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
         @Bind(R.id.retweet_img) ImageView mRetweetImg;
         @Bind(R.id.iv_favorited) ImageView mFavImg;
         @Bind(R.id.tv_handle) TextView mHandle;
+        @Bind(R.id.reply_id) ImageView mReplyImg;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -77,7 +78,7 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
 
     @Override
     public void onBindViewHolder(final ShouterRecyclerAdapter.ViewHolder holder, int position) {
-        Tweet tweet = mTweets.get(position);
+        final Tweet tweet = mTweets.get(position);
         ImageView imageView = holder.mProfileImage;
         imageView.setImageResource(android.R.color.transparent);
         Glide.with(mContext).load(tweet.getUser().getProfileImageUrl()).into(imageView);
@@ -143,6 +144,15 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
             });
         }
 
+        final long tweetId = tweet.getTweetId();
+        final String name = tweet.getUser().getName();
+        holder.mReplyImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replyToId(tweetId, name);
+            }
+        });
+
         holder.mHandle.setText("@"+tweet.getUser().getScreenName());
     }
 
@@ -198,5 +208,10 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
                 Log.d("NAYAN", "Error = " + errorResponse);
             }
         }, tweetId);
+    }
+
+    private void replyToId(long tweetId, String name) {
+        ShouterTimelineActivity activity = (ShouterTimelineActivity) mContext;
+        activity.showReply(tweetId, name);
     }
 }

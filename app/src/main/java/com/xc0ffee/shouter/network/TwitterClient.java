@@ -1,6 +1,7 @@
 package com.xc0ffee.shouter.network;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -61,10 +62,12 @@ public class TwitterClient extends OAuthBaseClient {
         getClient().get(apiUrl, params, handler);
     }
 
-    public void postToTwitter(AsyncHttpResponseHandler handler, String text) {
+    public void postToTwitter(AsyncHttpResponseHandler handler, String text, String inReplyTo) {
         String apiUrl = getApiUrl("statuses/update.json");
         RequestParams params = new RequestParams();
         params.put("status", text);
+        if (!TextUtils.isEmpty(inReplyTo))
+            params.put("in_reply_to_status_id", inReplyTo);
         getClient().post(apiUrl, params, handler);
     }
 
