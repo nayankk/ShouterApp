@@ -1,4 +1,4 @@
-# Assignement 2 - *Shouter App*
+# Assignement 3 - *Shouter App*
 
 *ShouterApp* is an android app that fetches tweets from timeline. This app can also be used to post a tweet to the timeline. Provision to retwet, like or reply to tweets are also provided.
 
