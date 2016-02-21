@@ -142,7 +142,7 @@ public class ShouterTimelineActivity extends AppCompatActivity {
 
     public void customLoadMoreDataFromApi(int offset) {
         // Lowest ID will always be at the last position
-        long lowest = mTweets.get(mTweets.size()-1).getId();
+        long lowest = mTweets.get(mTweets.size()-1).getTweetId();
         populateTimeline(false, lowest);
     }
 
