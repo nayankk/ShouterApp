@@ -1,11 +1,8 @@
 package com.xc0ffee.shouter.fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,15 +12,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.TextHttpResponseHandler;
 import com.xc0ffee.shouter.R;
 import com.xc0ffee.shouter.activities.ShouterApplication;
-import com.xc0ffee.shouter.activities.ShouterTimelineActivity;
-import com.xc0ffee.shouter.network.TwitterClient;
 
 import org.apache.http.Header;
 import org.json.JSONException;
@@ -126,7 +119,7 @@ public class ComposeDialogFragment extends android.support.v4.app.DialogFragment
         });
     }
 
-    private void postToTwitter() {
+    private void postToTwitter() {/*
         String tweetMsg = mTweetText.getText().toString();
         if (TextUtils.isEmpty(tweetMsg)) {
             AlertDialog alertDialog = new AlertDialog.Builder(getContext())
@@ -158,6 +151,6 @@ public class ComposeDialogFragment extends android.support.v4.app.DialogFragment
                 Toast.makeText(getContext(), "Couldn't shout!", Toast.LENGTH_SHORT).show();
                 dismiss();
             }
-        }, tweetMsg, null);
+        }, tweetMsg, null);*/
     }
 }

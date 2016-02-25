@@ -12,14 +12,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.xc0ffee.shouter.R;
 import com.xc0ffee.shouter.activities.ShouterApplication;
-import com.xc0ffee.shouter.activities.ShouterTimelineActivity;
-import com.xc0ffee.shouter.network.TwitterClient;
 
 import org.apache.http.Header;
 import org.json.JSONException;
@@ -129,7 +126,7 @@ public class ReplyFragment extends android.support.v4.app.DialogFragment {
         });
     }
 
-    private void replyToId(String id) {
+    private void replyToId(String id) {/*
         TwitterClient client = ShouterApplication.getRestClient();
         String status = "@" + mHandle + " " + mTweetText.getText().toString();
         client.postToTwitter(new JsonHttpResponseHandler() {
@@ -146,6 +143,6 @@ public class ReplyFragment extends android.support.v4.app.DialogFragment {
                 Toast.makeText(getContext(), "Couldn't refresh", Toast.LENGTH_SHORT).show();
                 dismiss();
             }
-        }, status, id);
+        }, status, id);*/
     }
 }

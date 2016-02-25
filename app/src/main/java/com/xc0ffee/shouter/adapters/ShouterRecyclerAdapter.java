@@ -6,24 +6,16 @@ import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.xc0ffee.shouter.R;
-import com.xc0ffee.shouter.activities.ShouterApplication;
-import com.xc0ffee.shouter.activities.ShouterTimelineActivity;
 import com.xc0ffee.shouter.models.Media;
 import com.xc0ffee.shouter.models.Tweet;
-
-import org.apache.http.Header;
-import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -178,7 +170,7 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
         return relativeDate;
     }
 
-    public void retweetMessage(long tweetId) {
+    public void retweetMessage(long tweetId) {/*
         ShouterApplication.getRestClient().retweet(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -191,10 +183,10 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
                 Toast.makeText(mContext, "Retweet failed", Toast.LENGTH_SHORT).show();
                 Log.d("NAYAN", "Error = " + errorResponse);
             }
-        }, tweetId);
+        }, tweetId);*/
     }
 
-    public void favoriteTweet(long tweetId) {
+    public void favoriteTweet(long tweetId) {/*
         ShouterApplication.getRestClient().favTweet(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -207,11 +199,11 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
                 Toast.makeText(mContext, "Favorite failed", Toast.LENGTH_SHORT).show();
                 Log.d("NAYAN", "Error = " + errorResponse);
             }
-        }, tweetId);
+        }, tweetId);*/
     }
 
-    private void replyToId(long tweetId, String name) {
+    private void replyToId(long tweetId, String name) {/*
         ShouterTimelineActivity activity = (ShouterTimelineActivity) mContext;
-        activity.showReply(tweetId, name);
+        activity.showReply(tweetId, name);*/
     }
 }
