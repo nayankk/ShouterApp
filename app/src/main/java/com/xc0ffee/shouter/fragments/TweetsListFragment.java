@@ -16,6 +16,8 @@ import com.xc0ffee.shouter.R;
 import com.xc0ffee.shouter.activities.DividerItemDecoration;
 import com.xc0ffee.shouter.activities.EndlessScrollListener;
 import com.xc0ffee.shouter.adapters.ShouterRecyclerAdapter;
+import com.xc0ffee.shouter.listeners.NetworkActivity;
+import com.xc0ffee.shouter.listeners.TweetsDirty;
 import com.xc0ffee.shouter.models.Tweet;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class TweetsListFragment extends Fragment
 
     protected List<Tweet> mTweets = new ArrayList<>();
     protected ShouterRecyclerAdapter mAdapter;
+    protected NetworkActivity mNetListener;
 
     @Bind(R.id.rv_tweets) RecyclerView mRecyclerView;
     @Bind(R.id.fab_compose) FloatingActionButton mComposeFab;
@@ -137,5 +140,9 @@ public class TweetsListFragment extends Fragment
     @Override
     public void OnShowReplyScreen(long tweetId, String name) {
         showReply(tweetId, name);
+    }
+
+    public void setNetworkListener(NetworkActivity listener) {
+        mNetListener = listener;
     }
 }

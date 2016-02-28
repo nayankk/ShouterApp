@@ -41,13 +41,22 @@ public class MentionsTimelineFragment extends TweetsListFragment {
                 Toast.makeText(getContext(), "Couldn't refresh timeline", Toast.LENGTH_SHORT).show();
                 Log.d("NAYAN", "Response = " + responseString);
                 mSwipeContainer.setRefreshing(false);
+                if (mNetListener != null) {
+                    mNetListener.NetworkActivityEnd();
+                }
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 refreshTimeline(responseString, shouldClear, maxId);
+                if (mNetListener != null) {
+                    mNetListener.NetworkActivityEnd();
+                }
             }
         }, maxId);
+        if (mNetListener != null) {
+            mNetListener.NetworkActivityStart();
+        }
     }
 
     private void refreshTimeline(String response, boolean shouldClear, final long maxId) {

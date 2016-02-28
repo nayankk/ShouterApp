@@ -11,22 +11,25 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.xc0ffee.shouter.R;
 import com.xc0ffee.shouter.fragments.HomeTimlineFragment;
 import com.xc0ffee.shouter.fragments.MentionsTimelineFragment;
+import com.xc0ffee.shouter.listeners.NetworkActivity;
 import com.xc0ffee.shouter.network.Utils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
-public class ShouterTimelineActivity extends AppCompatActivity {
+public class ShouterTimelineActivity extends AppCompatActivity
+        implements NetworkActivity {
 
     @Bind(R.id.viewpager) ViewPager mPager;
     @Bind(R.id.tabs) PagerSlidingTabStrip mTabStrip;
-
-
+    @Bind(R.id.pb) SmoothProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +53,13 @@ public class ShouterTimelineActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return new HomeTimlineFragment();
+                HomeTimlineFragment fragment = new HomeTimlineFragment();
+                fragment.setNetworkListener(ShouterTimelineActivity.this);
+                return fragment;
             } else if (position == 1) {
-                return new MentionsTimelineFragment();
+                MentionsTimelineFragment fragment = new MentionsTimelineFragment();
+                fragment.setNetworkListener(ShouterTimelineActivity.this);
+                return fragment;
             } else {
                 return null;
             }
@@ -106,5 +113,15 @@ public class ShouterTimelineActivity extends AppCompatActivity {
                     })
                     .create().show();
         }
+    }
+
+    @Override
+    public void NetworkActivityStart() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void NetworkActivityEnd() {
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 }

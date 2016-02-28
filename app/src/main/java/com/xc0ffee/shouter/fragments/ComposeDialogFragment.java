@@ -23,6 +23,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.xc0ffee.shouter.R;
 import com.xc0ffee.shouter.activities.ShouterApplication;
+import com.xc0ffee.shouter.listeners.TweetsDirty;
 import com.xc0ffee.shouter.network.TwitterClient;
 
 import org.apache.http.Header;

@@ -20,7 +20,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.xc0ffee.shouter.R;
 import com.xc0ffee.shouter.activities.ProfileActivity;
 import com.xc0ffee.shouter.activities.ShouterApplication;
-import com.xc0ffee.shouter.fragments.TweetsDirty;
+import com.xc0ffee.shouter.listeners.TweetsDirty;
 import com.xc0ffee.shouter.models.Media;
 import com.xc0ffee.shouter.models.Tweet;
 
