@@ -2,16 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.xc0ffee.shouter">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".activities.ShouterApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name="com.xc0ffee.shouter.activities.ShouterApplication">
-
+        android:theme="@style/AppTheme">
         <meta-data
             android:name="AA_DB_NAME"
             android:value="RestClient.db" />
@@ -19,9 +18,10 @@
             android:name="AA_DB_VERSION"
             android:value="1" />
 
-        <activity android:name="com.xc0ffee.shouter.activities.ShouterLoginActivity">
+        <activity android:name=".activities.ShouterLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
@@ -35,8 +35,11 @@
                     android:scheme="oauth" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".activities.ShouterTimelineActivity"/>
+        <activity android:name=".activities.ShouterTimelineActivity" />
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:label="@string/title_activity_profile"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -3,19 +3,29 @@ package com.xc0ffee.shouter.adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.xc0ffee.shouter.R;
+import com.xc0ffee.shouter.activities.ProfileActivity;
+import com.xc0ffee.shouter.activities.ShouterApplication;
+import com.xc0ffee.shouter.fragments.TweetsDirty;
 import com.xc0ffee.shouter.models.Media;
 import com.xc0ffee.shouter.models.Tweet;
+
+import org.apache.http.Header;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,6 +40,8 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
     List<Tweet> mTweets;
 
     private final Context mContext;
+
+    private TweetsDirty mListener;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -73,6 +85,14 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
         final Tweet tweet = mTweets.get(position);
         ImageView imageView = holder.mProfileImage;
         imageView.setImageResource(android.R.color.transparent);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, ProfileActivity.class);
+                intent.putExtra("screenname", tweet.getUser().getScreenName());
+                mContext.startActivity(intent);
+            }
+        });
         Glide.with(mContext).load(tweet.getUser().getProfileImageUrl()).into(imageView);
         holder.mUsername.setText(tweet.getUser().getName());
         holder.mBody.setText(tweet.getText());
@@ -170,12 +190,13 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
         return relativeDate;
     }
 
-    public void retweetMessage(long tweetId) {/*
+    public void retweetMessage(long tweetId) {
         ShouterApplication.getRestClient().retweet(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                ShouterTimelineActivity activity = (ShouterTimelineActivity) mContext;
-                activity.populateTimeline(true, -1);
+                if (mListener != null) {
+                    mListener.OnTweetRetweeted();
+                }
             }
 
             @Override
@@ -183,15 +204,16 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
                 Toast.makeText(mContext, "Retweet failed", Toast.LENGTH_SHORT).show();
                 Log.d("NAYAN", "Error = " + errorResponse);
             }
-        }, tweetId);*/
+        }, tweetId);
     }
 
-    public void favoriteTweet(long tweetId) {/*
+    public void favoriteTweet(long tweetId) {
         ShouterApplication.getRestClient().favTweet(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                ShouterTimelineActivity activity = (ShouterTimelineActivity) mContext;
-                activity.populateTimeline(true, -1);
+                if (mListener != null) {
+                    mListener.OnTweetFavorited();
+                }
             }
 
             @Override
@@ -199,11 +221,16 @@ public class ShouterRecyclerAdapter extends RecyclerView.Adapter <ShouterRecycle
                 Toast.makeText(mContext, "Favorite failed", Toast.LENGTH_SHORT).show();
                 Log.d("NAYAN", "Error = " + errorResponse);
             }
-        }, tweetId);*/
+        }, tweetId);
     }
 
-    private void replyToId(long tweetId, String name) {/*
-        ShouterTimelineActivity activity = (ShouterTimelineActivity) mContext;
-        activity.showReply(tweetId, name);*/
+    private void replyToId(long tweetId, String name) {
+        if (mListener != null) {
+            mListener.OnShowReplyScreen(tweetId, name);
+        }
+    }
+
+    public void setDirtyListener(TweetsDirty listener) {
+        mListener = listener;
     }
 }

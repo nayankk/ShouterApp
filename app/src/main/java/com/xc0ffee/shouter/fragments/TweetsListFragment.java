@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,7 +24,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class TweetsListFragment extends Fragment {
+public class TweetsListFragment extends Fragment
+        implements TweetsDirty {
 
     protected List<Tweet> mTweets = new ArrayList<>();
     protected ShouterRecyclerAdapter mAdapter;
@@ -51,6 +53,7 @@ public class TweetsListFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         mAdapter = new ShouterRecyclerAdapter(getContext(), mTweets);
+        mAdapter.setDirtyListener(this);
 
         mRecyclerView.setAdapter(mAdapter);
         LinearLayoutManager layout = new LinearLayoutManager(getContext());
@@ -93,19 +96,46 @@ public class TweetsListFragment extends Fragment {
         refresh(false, lowest);
     }
 
-    private void showCompose() {/*
-        FragmentManager fm = getSupportFragmentManager();
+    private void showCompose() {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
         ComposeDialogFragment fragment = ComposeDialogFragment.newInstance("Compose a shout");
-        fragment.show(fm, "compose_fg");*/
+        fragment.setTweetDirtyListener(this);
+        fragment.show(fm, "compose_fg");
     }
 
-    public void showReply(long id, String name) {/*
-        FragmentManager fm = getSupportFragmentManager();
+    public void showReply(long id, String name) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
         ReplyFragment fragment = ReplyFragment.newInstance(name, id);
-        fragment.show(fm, "reply");*/
+        fragment.setTweetsDirtyListener(this);
+        fragment.show(fm, "reply");
     }
 
     protected void refresh(boolean shouldClear, long maxId) {
 
+    }
+
+    @Override
+    public void OnNewTweetSent() {
+        refresh(true, -1);
+    }
+
+    @Override
+    public void OnReplySent() {
+        refresh(true, -1);
+    }
+
+    @Override
+    public void OnTweetFavorited() {
+        refresh(true, -1);
+    }
+
+    @Override
+    public void OnTweetRetweeted() {
+        refresh(true, -1);
+    }
+
+    @Override
+    public void OnShowReplyScreen(long tweetId, String name) {
+        showReply(tweetId, name);
     }
 }

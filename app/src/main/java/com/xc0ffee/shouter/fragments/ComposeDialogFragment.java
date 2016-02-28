@@ -1,9 +1,13 @@
 package com.xc0ffee.shouter.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +16,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.xc0ffee.shouter.R;
 import com.xc0ffee.shouter.activities.ShouterApplication;
+import com.xc0ffee.shouter.network.TwitterClient;
 
 import org.apache.http.Header;
 import org.json.JSONException;
@@ -34,6 +41,8 @@ public class ComposeDialogFragment extends android.support.v4.app.DialogFragment
     @Bind(R.id.iv_close) ImageView mCloseBtn;
     @Bind(R.id.tv_myname) TextView mMyName;
     @Bind(R.id.tv_myhandle) TextView mMyHandle;
+
+    private TweetsDirty mListener;
 
     private final TextWatcher mTextEditorWatcher = new TextWatcher() {
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -53,6 +62,10 @@ public class ComposeDialogFragment extends android.support.v4.app.DialogFragment
         public void afterTextChanged(Editable s) {
         }
     };
+
+    public void setTweetDirtyListener(TweetsDirty listener) {
+        mListener = listener;
+    }
 
     public static ComposeDialogFragment newInstance(String title) {
         ComposeDialogFragment fragment = new ComposeDialogFragment();
@@ -76,7 +89,7 @@ public class ComposeDialogFragment extends android.support.v4.app.DialogFragment
         getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
         super.onResume();
 
-        ShouterApplication.getRestClient().getProfile(new JsonHttpResponseHandler() {
+        ShouterApplication.getRestClient().getUserInfo(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 String profileImgUrl = null;
@@ -92,6 +105,11 @@ public class ComposeDialogFragment extends android.support.v4.app.DialogFragment
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d("NAYAN", "Response string = " + responseString);
             }
         });
     }
@@ -119,7 +137,7 @@ public class ComposeDialogFragment extends android.support.v4.app.DialogFragment
         });
     }
 
-    private void postToTwitter() {/*
+    private void postToTwitter() {
         String tweetMsg = mTweetText.getText().toString();
         if (TextUtils.isEmpty(tweetMsg)) {
             AlertDialog alertDialog = new AlertDialog.Builder(getContext())
@@ -141,8 +159,9 @@ public class ComposeDialogFragment extends android.support.v4.app.DialogFragment
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 Toast.makeText(getContext(), "Successfully shouted", Toast.LENGTH_SHORT).show();
-                ShouterTimelineActivity activity = (ShouterTimelineActivity) getActivity();
-                activity.populateTimeline(true, -1);
+                if (mListener != null) {
+                    mListener.OnNewTweetSent();
+                }
                 dismiss();
             }
 
@@ -151,6 +170,6 @@ public class ComposeDialogFragment extends android.support.v4.app.DialogFragment
                 Toast.makeText(getContext(), "Couldn't shout!", Toast.LENGTH_SHORT).show();
                 dismiss();
             }
-        }, tweetMsg, null);*/
+        }, tweetMsg, null);
     }
 }

@@ -12,11 +12,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.xc0ffee.shouter.R;
 import com.xc0ffee.shouter.activities.ShouterApplication;
+import com.xc0ffee.shouter.network.TwitterClient;
 
 import org.apache.http.Header;
 import org.json.JSONException;
@@ -36,6 +38,8 @@ public class ReplyFragment extends android.support.v4.app.DialogFragment {
     @Bind(R.id.tv_myhandle) TextView mMyHandle;
 
     private String mHandle;
+
+    private TweetsDirty mListener;
 
     private final TextWatcher mTextEditorWatcher = new TextWatcher() {
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -79,7 +83,7 @@ public class ReplyFragment extends android.support.v4.app.DialogFragment {
         getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
         super.onResume();
 
-        ShouterApplication.getRestClient().getProfile(new JsonHttpResponseHandler() {
+        ShouterApplication.getRestClient().getUserInfo(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 String profileImgUrl = null;
@@ -126,15 +130,16 @@ public class ReplyFragment extends android.support.v4.app.DialogFragment {
         });
     }
 
-    private void replyToId(String id) {/*
+    private void replyToId(String id) {
         TwitterClient client = ShouterApplication.getRestClient();
         String status = "@" + mHandle + " " + mTweetText.getText().toString();
         client.postToTwitter(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Toast.makeText(getContext(), "Reply sent", Toast.LENGTH_SHORT).show();
-                ShouterTimelineActivity activity = (ShouterTimelineActivity) getContext();
-                activity.populateTimeline(true, -1);
+                if (mListener != null) {
+                    mListener.OnReplySent();
+                }
                 dismiss();
             }
 
@@ -143,6 +148,10 @@ public class ReplyFragment extends android.support.v4.app.DialogFragment {
                 Toast.makeText(getContext(), "Couldn't refresh", Toast.LENGTH_SHORT).show();
                 dismiss();
             }
-        }, status, id);*/
+        }, status, id);
+    }
+
+    public void setTweetsDirtyListener(TweetsDirty listener) {
+        mListener = listener;
     }
 }
