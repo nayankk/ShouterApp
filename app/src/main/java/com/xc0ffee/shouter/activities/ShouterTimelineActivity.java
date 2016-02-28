@@ -1,5 +1,7 @@
 package com.xc0ffee.shouter.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +16,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.xc0ffee.shouter.R;
 import com.xc0ffee.shouter.fragments.HomeTimlineFragment;
 import com.xc0ffee.shouter.fragments.MentionsTimelineFragment;
+import com.xc0ffee.shouter.network.Utils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -83,5 +86,25 @@ public class ShouterTimelineActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ProfileActivity.class);
         intent.putExtra("screenname", "xc0ffee");
         startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!Utils.isNetworkAvailable(this) || !Utils.isOnline()) {
+            // Show error message
+            new AlertDialog.Builder(this)
+                    .setTitle("No network!")
+                    .setMessage("You are not connected to interview. Please check your internet connection." +
+                            " If issue persists, please don't call me. Fix it yourself and try again." +
+                            " Meanwhile locally cached tweets will be shown")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .create().show();
+        }
     }
 }
